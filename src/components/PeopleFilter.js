@@ -27,6 +27,9 @@ export const PeopleFilter = ({ id }) => (
             <li>Last Name: {data.person && data.person.lastName}</li>
             <li>Birthdate: {data.person && data.person.birthDate}</li>
             <li>Avatar: {data.person && data.person.avatar}</li>
+            <li>
+              Color-Scheme: {data.person && data.person.prefersColorScheme}
+            </li>
             <li>Created At:{data.person && data.person.created_at}</li>
             <li>Updated At: {data.person && data.person.updated_at}</li>
           </ul>
