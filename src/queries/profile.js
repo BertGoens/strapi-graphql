@@ -1,42 +1,50 @@
 import gql from "graphql-tag";
 
-export const GET_PERSON = gql`
-  query Person($id: ID!) {
-    person(id: $id) {
+export const GET_PROFILE = gql`
+  query Profile($id: ID!) {
+    profile(id: $id) {
       id
       firstName
       lastName
       birthDate
-      avatar
+      prefersColorScheme
+      avatar {
+        mime
+        url
+      }
       created_at
       updated_at
     }
   }
 `;
 
-export const GET_PEOPLE = gql`
+export const GET_PROFILES = gql`
   query {
-    people {
+    profiles {
       id
       firstName
       lastName
       birthDate
-      avatar
+      prefersColorScheme
+      avatar {
+        mime
+        url
+      }
       created_at
       updated_at
     }
   }
 `;
 
-export const UPDATE_PERSON_PROFILE = gql`
-  mutation Person(
+export const UPDATE_PROFILE = gql`
+  mutation Profile(
     $id: ID!
     $firstName: String
     $lastName: String
     $prefersColorScheme: String
     $birthDate: DateTime
   ) {
-    updatePerson(
+    updateProfile(
       input: {
         where: { id: $id }
         data: {
@@ -47,7 +55,7 @@ export const UPDATE_PERSON_PROFILE = gql`
         }
       }
     ) {
-      person {
+      profile {
         id
         firstName
         lastName

@@ -1,12 +1,12 @@
 import React from "react";
 import { Query } from "react-apollo";
-import { GET_PERSON } from "../queries/people";
+import { GET_PROFILE } from "../queries/profile";
 
 export const PeopleFilter = ({ id }) => (
   <>
     <h1>People Filter</h1>
 
-    <Query query={GET_PERSON} variables={{ id }}>
+    <Query query={GET_PROFILE} variables={{ id }}>
       {({ loading, error, data }) => {
         if (loading) return <p>Loading...</p>;
         if (error) console.error(error);
@@ -21,17 +21,35 @@ export const PeopleFilter = ({ id }) => (
         return (
           <ul>
             <li>
-              <b>Id: </b> {data.person && data.person.id}
+              <b>Id: </b> {data.profile && data.profile.id}
             </li>
-            <li>First Name: {data.person && data.person.firstName}</li>
-            <li>Last Name: {data.person && data.person.lastName}</li>
-            <li>Birthdate: {data.person && data.person.birthDate}</li>
-            <li>Avatar: {data.person && data.person.avatar}</li>
+            <li>First Name: {data.profile && data.profile.firstName}</li>
+            <li>Last Name: {data.profile && data.profile.lastName}</li>
+            <li>Birthdate: {data.profile && data.profile.birthDate}</li>
             <li>
-              Color-Scheme: {data.person && data.person.prefersColorScheme}
+              Avatar:
+              {data.profile && data.profile.avatar && data.profile.avatar.url && (
+                <ul>
+                  <li>
+                    <img
+                      alt=""
+                      src={"http://localhost:1337/" + data.profile.avatar.url}
+                      style={{
+                        maxHeight: "64px",
+                        maxWidth: "64px",
+                        height: "auto",
+                        width: "auto"
+                      }}
+                    />
+                  </li>
+                </ul>
+              )}
             </li>
-            <li>Created At:{data.person && data.person.created_at}</li>
-            <li>Updated At: {data.person && data.person.updated_at}</li>
+            <li>
+              Color-Scheme: {data.profile && data.profile.prefersColorScheme}
+            </li>
+            <li>Created At:{data.profile && data.profile.created_at}</li>
+            <li>Updated At: {data.profile && data.profile.updated_at}</li>
           </ul>
         );
       }}
