@@ -48,6 +48,7 @@ export const UPDATE_PERSON_PROFILE = gql`
       }
     ) {
       person {
+        id
         firstName
         lastName
         prefersColorScheme
