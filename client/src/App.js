@@ -17,13 +17,17 @@ const client = new ApolloClient({
 });
 
 function App() {
-  const [idFilter, setIdFilter] = useState(1);
+  const [idFilter, setIdFilter] = useState(-1);
   const [profile, setProfile] = useState({});
 
   return (
     <ApolloProvider client={client}>
       <div className="App">
-        <PeopleList setFilter={setIdFilter} setProfile={setProfile} />
+        <PeopleList
+          selectedId={idFilter}
+          setFilter={setIdFilter}
+          setProfile={setProfile}
+        />
         <PeopleDetails id={idFilter} setFilter={setIdFilter} />
         <PeopleEditor profile={profile} />
       </div>

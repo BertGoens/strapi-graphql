@@ -6,11 +6,11 @@ export function PeopleEditor({ profile }) {
   const [firstNameField, setFirstNameField] = useState("");
   const [lastNameField, setLastNameField] = useState("");
 
+  const { firstName, lastName, avatar } = profile;
   useEffect(() => {
-    const { firstName, lastName } = profile;
     setFirstNameField(firstName);
     setLastNameField(lastName);
-  }, [profile]);
+  }, [firstName, lastName, profile]);
 
   const _updateAvatar = async e => {
     const file = document.getElementById("fileItem").files[0];
@@ -47,20 +47,41 @@ export function PeopleEditor({ profile }) {
   };
 
   return (
-    <div>
-      <h1>People Editor</h1>
+    <div style={{ marginBottom: "1em" }}>
+      <h1>Selected Editor</h1>
       <div>
         <h2>Avatar</h2>
-        <input
-          type="file"
-          name="files"
-          accept="image/*"
-          readOnly
-          id="fileItem"
-          onChange={_updateAvatar}
-        />
-        <br />
-        <br />
+        <div>
+          Avatar:
+          {avatar && avatar.url && (
+            <>
+              <img
+                alt=""
+                src={`${process.env.REACT_APP_STRAPI}/${avatar.url}`}
+                style={{
+                  maxHeight: "64px",
+                  maxWidth: "64px",
+                  height: "auto",
+                  width: "auto",
+                  cursor: "pointer"
+                }}
+                onClick={e => {
+                  e.preventDefault();
+                  document.getElementById("fileItem").click();
+                }}
+              />
+              <input
+                type="file"
+                name="files"
+                accept="image/*"
+                readOnly
+                id="fileItem"
+                onChange={_updateAvatar}
+                style={{ opacity: 0 }}
+              />
+            </>
+          )}
+        </div>
       </div>
 
       <Mutation mutation={UPDATE_PROFILE} key={profile.id}>

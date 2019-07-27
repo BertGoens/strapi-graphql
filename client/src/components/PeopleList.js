@@ -2,7 +2,7 @@ import React from "react";
 import { Query } from "react-apollo";
 import { GET_PROFILES } from "../queries/profile";
 
-export const PeopleList = ({ setFilter, setProfile }) => (
+export const PeopleList = ({ selectedId, setFilter, setProfile }) => (
   <Query query={GET_PROFILES}>
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
@@ -25,8 +25,17 @@ export const PeopleList = ({ setFilter, setProfile }) => (
                   setFilter(id);
                   setProfile(arr[idx]);
                 }}
+                style={{ cursor: "pointer" }}
               >
-                Name: {firstName} {lastName}
+                {selectedId === id ? (
+                  <span style={{ fontWeight: "bold" }}>
+                    Name: {firstName} {lastName}
+                  </span>
+                ) : (
+                  <span>
+                    Name: {firstName} {lastName}
+                  </span>
+                )}
               </p>
             </div>
           ))}

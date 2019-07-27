@@ -4,7 +4,7 @@ import { GET_PROFILE } from "../queries/profile";
 
 export const PeopleDetails = ({ id }) => (
   <>
-    <h1>People Filter</h1>
+    <h1>Selected Details</h1>
 
     <Query query={GET_PROFILE} variables={{ id }}>
       {({ loading, error, data }) => {
