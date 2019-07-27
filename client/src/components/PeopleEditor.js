@@ -6,7 +6,7 @@ export function PeopleEditor({ profile }) {
   const [firstNameField, setFirstNameField] = useState("");
   const [lastNameField, setLastNameField] = useState("");
 
-  const { firstName, lastName, avatar } = profile;
+  const { firstName, lastName, avatar, id } = profile;
   useEffect(() => {
     setFirstNameField(firstName);
     setLastNameField(lastName);
@@ -19,7 +19,6 @@ export function PeopleEditor({ profile }) {
       return;
     }
 
-    console.log(file);
     if (file.type && !file.type.startsWith("image/")) {
       console.log("File is not an image");
       return;
@@ -42,8 +41,13 @@ export function PeopleEditor({ profile }) {
     };
 
     const response = await fetch(url, requestInit);
-    console.log("ok: " + response.ok);
-    console.log(response.status + " " + response.statusText);
+    if (response.ok) {
+      const parsed = await response.json();
+      const uploadDetails = parsed[0];
+      const { mime, url } = uploadDetails;
+      // update cache with personId = id
+      console.log("Update apollo cache " + id);
+    }
   };
 
   return (
