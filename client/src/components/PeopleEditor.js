@@ -12,46 +12,54 @@ export function PeopleEditor({ profile }) {
     setLastNameField(lastName);
   }, [profile]);
 
+  const _onSubmit = async e => {
+    e.preventDefault();
+
+    // the FormData parameters are defined by Strapi
+    var formData = new FormData();
+
+    formData.append("ref", "profile"); // Model name
+    formData.append("refId", profile.id); // Profile id
+    formData.append("field", "avatar"); // Field name in the model
+
+    // HTML image file input, chosen by user
+    const file = document.getElementById("fileItem").files[0];
+    if (!file) {
+      console.warn("No file selected");
+      return;
+    }
+    formData.append("files", file);
+
+    const url = `${process.env.REACT_APP_STRAPI}/upload`;
+    const requestInit = {
+      method: "post",
+      headers: {
+        authorization: process.env.REACT_APP_JWT
+      },
+      body: formData
+    };
+
+    const response = await fetch(url, requestInit);
+    console.log("ok: " + response.ok);
+    console.log(response.status + " " + response.statusText);
+  };
+
   return (
     <div>
       <h1>People Editor</h1>
       <div>
         <h2>Avatar</h2>
-        <form
-          id="updateAvatar"
-          method="post"
-          action="http://localhost:1337/upload"
-        >
-          <input type="file" name="files" accept="image/*" readOnly />
-
-          {/* Model name */}
-          <input type="text" name="ref" value="profile" readOnly hidden />
-
-          {/* Profile id */}
-          <input type="text" name="refId" value={profile.id} hidden />
-
-          {/* Field name in the model */}
-          <input type="text" name="field" value="avatar" readOnly hidden />
-          <br />
-          <br />
-
-          {/* POST must be of type FormData */}
+        <form onSubmit={_onSubmit} id="updateAvatarForm">
           <input
-            type="submit"
-            value="Submit"
-            onSubmit={e => {
-              e.preventDefault();
-              e.stopPropagation();
-
-              const formElement = document.getElementById("updateAvatar");
-              const request = new XMLHttpRequest();
-              // TODO
-              request.setRequestHeader("authorization", "Bearer ey");
-              request.open("POST", "http://localhost:1337/upload");
-              request.send(new FormData(formElement));
-              console.log("Request sent");
-            }}
+            type="file"
+            name="files"
+            accept="image/*"
+            readOnly
+            id="fileItem"
           />
+          <br />
+          <br />
+          <button type="submit">Send</button>
           <br />
           <br />
         </form>

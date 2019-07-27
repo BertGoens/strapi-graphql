@@ -5,15 +5,12 @@ import { PeopleEditor } from "./components/PeopleEditor";
 import { PeopleFilter } from "./components/PeopleFilter";
 import { PeopleList } from "./components/PeopleList";
 
-const token =
-"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNTY0MTYxMjA0LCJleHAiOjE1NjY3NTMyMDR9.sZJGXU1w30hpKgVA8ThSDJ8HLe8PckXdobRry6CSnWE"
-
 const client = new ApolloClient({
-  uri: "http://localhost:1337/graphql",
+  uri: `${process.env.REACT_APP_STRAPI}/graphql`,
   request: operation => {
     operation.setContext({
       headers: {
-        authorization: token
+        authorization: process.env.REACT_APP_JWT
       }
     });
   }

@@ -33,7 +33,9 @@ export const PeopleFilter = ({ id }) => (
                   <li>
                     <img
                       alt=""
-                      src={"http://localhost:1337/" + data.profile.avatar.url}
+                      src={`${process.env.REACT_APP_STRAPI}/${
+                        data.profile.avatar.url
+                      }`}
                       style={{
                         maxHeight: "64px",
                         maxWidth: "64px",
