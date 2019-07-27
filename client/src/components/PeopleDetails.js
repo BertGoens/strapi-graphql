@@ -2,7 +2,7 @@ import React from "react";
 import { Query } from "react-apollo";
 import { GET_PROFILE } from "../queries/profile";
 
-export const PeopleFilter = ({ id }) => (
+export const PeopleDetails = ({ id }) => (
   <>
     <h1>People Filter</h1>
 

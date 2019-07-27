@@ -1,8 +1,8 @@
 import ApolloClient from "apollo-boost";
 import React, { useState } from "react";
 import { ApolloProvider } from "react-apollo";
+import { PeopleDetails } from "./components/PeopleDetails";
 import { PeopleEditor } from "./components/PeopleEditor";
-import { PeopleFilter } from "./components/PeopleFilter";
 import { PeopleList } from "./components/PeopleList";
 
 const client = new ApolloClient({
@@ -24,7 +24,7 @@ function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <PeopleList setFilter={setIdFilter} setProfile={setProfile} />
-        <PeopleFilter id={idFilter} setFilter={setIdFilter} />
+        <PeopleDetails id={idFilter} setFilter={setIdFilter} />
         <PeopleEditor profile={profile} />
       </div>
     </ApolloProvider>
