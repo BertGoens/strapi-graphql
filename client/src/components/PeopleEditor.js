@@ -12,23 +12,25 @@ export function PeopleEditor({ profile }) {
     setLastNameField(lastName);
   }, [profile]);
 
-  const _onSubmit = async e => {
-    e.preventDefault();
-
-    // the FormData parameters are defined by Strapi
-    var formData = new FormData();
-
-    formData.append("ref", "profile"); // Model name
-    formData.append("refId", profile.id); // Profile id
-    formData.append("field", "avatar"); // Field name in the model
-
-    // HTML image file input, chosen by user
+  const _updateAvatar = async e => {
     const file = document.getElementById("fileItem").files[0];
     if (!file) {
       console.warn("No file selected");
       return;
     }
-    formData.append("files", file);
+
+    console.log(file);
+    if (file.type && !file.type.startsWith("image/")) {
+      console.log("File is not an image");
+      return;
+    }
+
+    // the FormData parameters are defined by Strapi
+    var formData = new FormData();
+    formData.append("ref", "profile"); // Model name
+    formData.append("refId", profile.id); // Profile id
+    formData.append("field", "avatar"); // Field name in the model
+    formData.append("files", file); // HTML image file input, chosen by user
 
     const url = `${process.env.REACT_APP_STRAPI}/upload`;
     const requestInit = {
@@ -49,20 +51,16 @@ export function PeopleEditor({ profile }) {
       <h1>People Editor</h1>
       <div>
         <h2>Avatar</h2>
-        <form onSubmit={_onSubmit} id="updateAvatarForm">
-          <input
-            type="file"
-            name="files"
-            accept="image/*"
-            readOnly
-            id="fileItem"
-          />
-          <br />
-          <br />
-          <button type="submit">Send</button>
-          <br />
-          <br />
-        </form>
+        <input
+          type="file"
+          name="files"
+          accept="image/*"
+          readOnly
+          id="fileItem"
+          onChange={_updateAvatar}
+        />
+        <br />
+        <br />
       </div>
 
       <Mutation mutation={UPDATE_PROFILE} key={profile.id}>
