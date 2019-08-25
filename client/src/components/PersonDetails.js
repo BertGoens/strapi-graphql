@@ -2,7 +2,7 @@ import React from "react";
 import { Query } from "react-apollo";
 import { GET_PROFILE } from "../queries/profile";
 
-export const PeopleDetails = ({ id }) => (
+export const PersonDetails = ({ id }) => (
   <>
     <h1>Selected Details</h1>
 
@@ -44,6 +44,8 @@ export const PeopleDetails = ({ id }) => (
                       }}
                     />
                   </li>
+                  <li>Avatar id: {data.profile.avatar.id}</li>
+                  <li>Avatar mime: {data.profile.avatar.mime}</li>
                 </ul>
               )}
             </li>

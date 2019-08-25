@@ -9,6 +9,7 @@ export const GET_PROFILE = gql`
       birthDate
       prefersColorScheme
       avatar {
+        id
         mime
         url
       }
@@ -27,6 +28,7 @@ export const GET_PROFILES = gql`
       birthDate
       prefersColorScheme
       avatar {
+        id
         mime
         url
       }

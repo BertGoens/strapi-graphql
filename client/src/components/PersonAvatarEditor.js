@@ -1,5 +1,4 @@
 import React from "react";
-import { Query } from "react-apollo";
 import { GET_PROFILE } from "../queries/profile";
 
 function isValidAvatar(file) {
@@ -40,34 +39,49 @@ function makeUpdateAvatarRequest(formData) {
   return fetch(url, requestInit);
 }
 
-function updateApolloCache(uploadDetails, client, id) {
+function updateApolloCache(uploadDetails, client, profileId) {
   // take new avatar properties from the response
-  const { mime, url } = uploadDetails;
+  const { mime, url, id } = uploadDetails;
 
   // retrieve old profile avatar
   const { profile } = client.readQuery({
     query: GET_PROFILE,
-    variables: { id }
+    variables: { id: profileId }
   });
 
   // overwrite old profile avatar
-  Object.assign(profile.avatar, { mime, url });
+  if (!profile.avatar) {
+    profile.avatar = { __typename: "UploadFile" };
+  }
+  Object.assign(profile.avatar, { mime, url, id });
   client.writeQuery({
     query: GET_PROFILE,
-    variables: { id },
+    variables: { id: profileId },
     data: { profile }
   });
 }
 
+function deleteAvatar(id) {
+  const url = `${process.env.REACT_APP_STRAPI}/upload/files/${id}`;
+  const requestInit = {
+    method: "delete",
+    headers: {
+      authorization: process.env.REACT_APP_JWT
+    }
+  };
+
+  return fetch(url, requestInit);
+}
+
 const _updateAvatar = (
   client, // the apollo client
-  profileId,
+  profile,
   setAvatarHash
 ) => async e => {
   const file = document.getElementById("fileItem").files[0];
   if (!isValidAvatar(file)) return;
 
-  const formData = buildFormData(file, profileId);
+  const formData = buildFormData(file, profile.id);
 
   // upload the avatar
   const response = await makeUpdateAvatarRequest(formData);
@@ -79,56 +93,55 @@ const _updateAvatar = (
     const uploadDetails = upload[0];
     const { hash } = uploadDetails;
 
-    await updateApolloCache(uploadDetails, client, profileId);
+    // remove old profile
+    if (profile.avatar && profile.avatar.id) {
+      const deleteOk = await deleteAvatar(profile.avatar.id);
+      if (!deleteOk.ok) {
+        console.warn("Could not remove old avatar");
+      }
+    }
+
+    // update reference to new profile
+    await updateApolloCache(uploadDetails, client, profile.id);
+
     // have react rerender any profile image component
     setAvatarHash(hash);
   }
 };
 
-export function PersonAvatar({ id, setAvatarHash }) {
+export function PersonAvatarEditor({ id, profile, client, setAvatarHash }) {
   return (
     <div style={{ marginBottom: "1em" }}>
       <h1>Selected Editor</h1>
       <div>
         <h2>Avatar</h2>
         <div>
-          Avatar:
-          {
-            <Query query={GET_PROFILE} variables={{ id }}>
-              {({ data, client }) => (
-                <>
-                  {data && data.profile && data.profile.avatar && (
-                    <img
-                      alt=""
-                      src={`${process.env.REACT_APP_STRAPI}/${
-                        data.profile.avatar.url
-                      }`}
-                      style={{
-                        maxHeight: "64px",
-                        maxWidth: "64px",
-                        height: "auto",
-                        width: "auto",
-                        cursor: "pointer"
-                      }}
-                      onClick={e => {
-                        e.preventDefault();
-                        document.getElementById("fileItem").click();
-                      }}
-                    />
-                  )}
-                  <input
-                    type="file"
-                    name="files"
-                    accept="image/*"
-                    readOnly
-                    id="fileItem"
-                    onChange={_updateAvatar(client, id, setAvatarHash)}
-                    style={{ opacity: 0 }}
-                  />
-                </>
-              )}
-            </Query>
-          }
+          {profile && profile.avatar && (
+            <img
+              alt=""
+              src={`${process.env.REACT_APP_STRAPI}/${profile.avatar.url}`}
+              style={{
+                maxHeight: "64px",
+                maxWidth: "64px",
+                height: "auto",
+                width: "auto",
+                cursor: "pointer"
+              }}
+              onClick={e => {
+                e.preventDefault();
+                document.getElementById("fileItem").click();
+              }}
+            />
+          )}
+          <input
+            type="file"
+            name="files"
+            accept="image/*"
+            readOnly
+            id="fileItem"
+            onChange={_updateAvatar(client, profile, setAvatarHash)}
+            style={{ opacity: 0 }}
+          />
         </div>
       </div>
     </div>
