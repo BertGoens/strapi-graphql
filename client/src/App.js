@@ -2,7 +2,7 @@ import ApolloClient from "apollo-boost";
 import React, { useState } from "react";
 import { ApolloProvider } from "react-apollo";
 import { PeopleDetails } from "./components/PeopleDetails";
-import { PeopleEditor } from "./components/PeopleEditor";
+import { PersonAvatar } from "./components/PeopleEditor";
 import { PeopleList } from "./components/PeopleList";
 
 const client = new ApolloClient({
@@ -18,18 +18,14 @@ const client = new ApolloClient({
 
 function App() {
   const [idFilter, setIdFilter] = useState(-1);
-  const [profile, setProfile] = useState({});
+  const [, setAvatarHash] = useState("");
 
   return (
     <ApolloProvider client={client}>
       <div className="App">
-        <PeopleList
-          selectedId={idFilter}
-          setFilter={setIdFilter}
-          setProfile={setProfile}
-        />
+        <PeopleList selectedId={idFilter} setFilter={setIdFilter} />
         <PeopleDetails id={idFilter} setFilter={setIdFilter} />
-        <PeopleEditor profile={profile} />
+        <PersonAvatar id={idFilter} setAvatarHash={setAvatarHash} />
       </div>
     </ApolloProvider>
   );
