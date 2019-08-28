@@ -8,7 +8,13 @@ function isValidAvatar(file) {
   }
 
   if (file.type && !file.type.startsWith("image/")) {
-    console.log("File is not an image");
+    console.warn("File is not an image");
+    return false;
+  }
+
+  const megabyte = 1000000;
+  if (file.size > megabyte) {
+    console.warn("File exceeds 1MB, please choose a smaller file.");
     return false;
   }
 
@@ -121,10 +127,8 @@ export function PersonAvatarEditor({ id, profile, client, setAvatarHash }) {
               alt=""
               src={`${process.env.REACT_APP_STRAPI}/${profile.avatar.url}`}
               style={{
-                maxHeight: "64px",
-                maxWidth: "64px",
-                height: "auto",
-                width: "auto",
+                height: "64px",
+                width: "64px",
                 cursor: "pointer"
               }}
               onClick={e => {
@@ -140,7 +144,10 @@ export function PersonAvatarEditor({ id, profile, client, setAvatarHash }) {
             readOnly
             id="fileItem"
             onChange={_updateAvatar(client, profile, setAvatarHash)}
-            style={{ opacity: 0 }}
+            style={{
+              opacity: 1, // change this into 0 with a webapp
+              display: 'inherit' // change this into none with a webapp
+            }}
           />
         </div>
       </div>
